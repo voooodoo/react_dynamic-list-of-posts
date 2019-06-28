@@ -16,11 +16,12 @@ export default User;
 User.defaultProps = {
   user: {
     address: {
-      suit: null,
+      suite: null,
       street: null,
       city: null,
     },
     name: null,
     email: null,
   },
+  email: null,
 };
