@@ -12,7 +12,7 @@ class App extends Component {
     filter: '',
   };
 
-  dowloadPost = () => {
+  dowloadPosts = () => {
     this.setState({ isLoading: true });
 
     const { getPosts, getUsers, getComments } = ApiService;
@@ -60,7 +60,7 @@ class App extends Component {
               ) : posts.length > 0 ? (
                 <PostList posts={showedPosts} />
               ) : (
-                <button type="button" className="btn btn-info" onClick={this.dowloadPost}>
+                <button type="button" className="btn btn-info" onClick={this.dowloadPosts}>
                   Download Posts
                 </button>
               )}
