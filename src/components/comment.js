@@ -1,7 +1,6 @@
 import React from 'react';
 
-const Comment = ({ comment }) => {
-  const { name, body, email } = comment;
+const Comment = ({ comment: { name, body, email } }) => {
   return (
     <li className="list-group-item d-flex justify-content-between align-items-center bg-secondary">
       <div className="card border-0 bg-secondary">

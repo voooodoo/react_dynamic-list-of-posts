@@ -9,14 +9,13 @@ class App extends Component {
     users: [],
     comments: [],
     isLoading: false,
+    filter: '',
   };
-
-  apiService = new ApiService();
 
   dowloadPost = () => {
     this.setState({ isLoading: true });
 
-    const { getPosts, getUsers, getComments } = this.apiService;
+    const { getPosts, getUsers, getComments } = ApiService;
 
     Promise.all([getPosts(), getUsers(), getComments()]).then(([posts, users, comments]) => {
       this.setState({
@@ -25,31 +24,34 @@ class App extends Component {
         comments,
         isLoading: false,
       });
-      console.log(this.state);
     });
   };
 
-  getPostWithData(posts, users, comments) {
-    const newPosts = posts.map(post => {
-      return {
-        ...post,
-        user: users.find(user => user.id === post.userId),
-        comments: comments.filter(comment => comment.postId === post.id),
-      };
-    });
+  applyFilter = key => {
+    if (key !== this.state.filter) {
+      this.setState({ filter: key });
+    }
+  };
+
+  getPostWithData(posts, users, comments, filter) {
+    const newPosts = posts
+      .filter(({ body }) => body.toLowerCase().includes(filter.toLowerCase()))
+      .map(post => {
+        return {
+          ...post,
+          user: users.find(user => user.id === post.userId),
+          comments: comments.filter(comment => comment.postId === post.id),
+        };
+      });
     return newPosts;
   }
 
   render() {
-    const { isLoading, posts, users, comments } = this.state;
-    let showedPosts = [];
-    if (posts) {
-      showedPosts = this.getPostWithData(posts, users, comments);
-      console.log(showedPosts);
-    }
+    const { isLoading, posts, users, comments, filter } = this.state;
+    const showedPosts = posts ? this.getPostWithData(posts, users, comments, filter) : [];
     return (
       <>
-        <Header />
+        <Header applyFilter={this.applyFilter} />
         <div className="container">
           <div className="row">
             <div className="col-12 text-center p-5">

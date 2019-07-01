@@ -1,4 +1,4 @@
-export default class ApiService {
+class ApiService {
   _baseUrl = 'https://jsonplaceholder.typicode.com/';
 
   _getData = url => {
@@ -9,3 +9,5 @@ export default class ApiService {
   getUsers = () => this._getData('users');
   getComments = () => this._getData('comments');
 }
+
+export default new ApiService();

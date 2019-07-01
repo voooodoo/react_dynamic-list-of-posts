@@ -12,16 +12,3 @@ const User = props => {
 };
 
 export default User;
-
-User.defaultProps = {
-  user: {
-    address: {
-      suite: null,
-      street: null,
-      city: null,
-    },
-    name: null,
-    email: null,
-  },
-  email: null,
-};

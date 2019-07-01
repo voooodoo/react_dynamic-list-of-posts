@@ -2,8 +2,7 @@ import React from 'react';
 import User from './user';
 import CommentList from './comment-list';
 
-const Post = ({ post }) => {
-  const { title, body, user, comments } = post;
+const Post = ({ post: { title, body, user, comments } }) => {
   return (
     <li className="list-group-item d-flex justify-content-center align-items-center p-0 border-0">
       <div className="card border-0 bg-primary text-white mb-3">
