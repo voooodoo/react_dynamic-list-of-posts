@@ -50,26 +50,24 @@ class App extends Component {
 
   render() {
     const { isLoading, showedPosts } = this.state;
-    let content;
-    if (isLoading) {
-      content = <span>Loading...</span>;
-    } else {
-      content =
-        showedPosts.length > 0 ? (
-          <PostList posts={showedPosts} />
-        ) : (
-          <button type="button" className="btn btn-info" onClick={this.dowloadPosts}>
-            Download Posts
-          </button>
-        );
-    }
+    const spinner = isLoading ? <span>Loading...</span> : null;
 
     return (
       <>
         <Header applyFilter={this.applyFilter} />
         <div className="container">
           <div className="row">
-            <div className="col-12 text-center p-5">{content}</div>
+            <div className="col-12 text-center p-5">
+              {spinner}
+              <PostList posts={showedPosts} />
+              <button
+                type="button"
+                className={`btn btn-info ${isLoading || showedPosts.length > 0 ? 'd-none' : null}`}
+                onClick={this.dowloadPosts}
+              >
+                Download Posts
+              </button>
+            </div>
           </div>
         </div>
       </>
