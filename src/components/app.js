@@ -32,7 +32,9 @@ class App extends Component {
   applyFilter = key => {
     if (key !== this.state.filter) {
       const { posts, users, comments } = this.state;
-      this.setState({ filter: key, showedPosts: this.getPostWithData(posts, users, comments, key) });
+      this.setState({ filter: key }, () =>
+        this.setState({ showedPosts: this.getPostWithData(posts, users, comments, this.state.filter) })
+      );
     }
   };
 
