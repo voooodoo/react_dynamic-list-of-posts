@@ -1,8 +1,11 @@
 import React from 'react';
 
 const User = props => {
-  const { name, email, address } = props.user;
-  const { suite, street, city } = address;
+  const {
+    name,
+    email,
+    address: { suite, street, city },
+  } = props.user;
 
   return (
     <span>

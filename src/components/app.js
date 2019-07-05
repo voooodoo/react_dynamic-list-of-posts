@@ -6,6 +6,7 @@ import PostList from './post-list';
 class App extends Component {
   state = {
     posts: [],
+    showedPosts: [],
     users: [],
     comments: [],
     isLoading: false,
@@ -23,48 +24,50 @@ class App extends Component {
         users,
         comments,
         isLoading: false,
+        showedPosts: this.getPostWithData(posts, users, comments, this.state.filter),
       });
     });
   };
 
   applyFilter = key => {
     if (key !== this.state.filter) {
-      this.setState({ filter: key });
+      const { posts, users, comments } = this.state;
+      this.setState({ filter: key, showedPosts: this.getPostWithData(posts, users, comments, key) });
     }
   };
 
   getPostWithData(posts, users, comments, filter) {
-    const newPosts = posts
+    return posts
       .filter(({ body }) => body.toLowerCase().includes(filter.toLowerCase()))
-      .map(post => {
-        return {
-          ...post,
-          user: users.find(user => user.id === post.userId),
-          comments: comments.filter(comment => comment.postId === post.id),
-        };
-      });
-    return newPosts;
+      .map(post => ({
+        ...post,
+        user: users.find(user => user.id === post.userId),
+        comments: comments.filter(comment => comment.postId === post.id),
+      }));
   }
 
   render() {
-    const { isLoading, posts, users, comments, filter } = this.state;
-    const showedPosts = posts ? this.getPostWithData(posts, users, comments, filter) : [];
+    const { isLoading, showedPosts } = this.state;
+    let content;
+    if (isLoading) {
+      content = <span>Loading...</span>;
+    } else {
+      content =
+        showedPosts.length > 0 ? (
+          <PostList posts={showedPosts} />
+        ) : (
+          <button type="button" className="btn btn-info" onClick={this.dowloadPosts}>
+            Download Posts
+          </button>
+        );
+    }
+
     return (
       <>
         <Header applyFilter={this.applyFilter} />
         <div className="container">
           <div className="row">
-            <div className="col-12 text-center p-5">
-              {isLoading ? (
-                <span>Loading...</span>
-              ) : posts.length > 0 ? (
-                <PostList posts={showedPosts} />
-              ) : (
-                <button type="button" className="btn btn-info" onClick={this.dowloadPosts}>
-                  Download Posts
-                </button>
-              )}
-            </div>
+            <div className="col-12 text-center p-5">{content}</div>
           </div>
         </div>
       </>

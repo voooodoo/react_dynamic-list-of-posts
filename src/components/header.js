@@ -11,8 +11,7 @@ class Header extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    const { applyFilter } = this.props;
-    applyFilter(this.state.search);
+    this.props.applyFilter(this.state.search);
   };
 
   render() {
