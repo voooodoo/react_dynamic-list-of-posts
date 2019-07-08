@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Header from './header';
 import ApiService from '../services/api-service';
 import PostList from './post-list';
+import debounce from '../helpers/debounce';
 
 class App extends Component {
   state = {
@@ -29,14 +30,13 @@ class App extends Component {
     });
   };
 
-  applyFilter = key => {
+  applyFilter = debounce(key => {
     if (key !== this.state.filter) {
       const { posts, users, comments } = this.state;
-      this.setState({ filter: key }, () =>
-        this.setState({ showedPosts: this.getPostWithData(posts, users, comments, this.state.filter) })
-      );
+
+      this.setState({ filter: key, showedPosts: this.getPostWithData(posts, users, comments, key) });
     }
-  };
+  }, 500);
 
   getPostWithData(posts, users, comments, filter) {
     return posts
@@ -49,8 +49,8 @@ class App extends Component {
   }
 
   render() {
-    const { isLoading, showedPosts } = this.state;
-    const spinner = isLoading ? <span>Loading...</span> : null;
+    const { isLoading, showedPosts, posts } = this.state;
+    const spinner = isLoading ? <div className="spinner spinner-border text-primary"></div> : null;
 
     return (
       <>
@@ -60,9 +60,10 @@ class App extends Component {
             <div className="col-12 text-center p-5">
               {spinner}
               <PostList posts={showedPosts} />
+              {showedPosts.length === 0 && posts.length > 0 ? 'Nothing' : null}
               <button
                 type="button"
-                className={`btn btn-info ${isLoading || showedPosts.length > 0 ? 'd-none' : null}`}
+                className={`btn btn-info ${isLoading || posts.length > 0 ? 'd-none' : null}`}
                 onClick={this.dowloadPosts}
               >
                 Download Posts
