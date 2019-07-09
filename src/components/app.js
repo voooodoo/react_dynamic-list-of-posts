@@ -11,7 +11,7 @@ class App extends Component {
     users: [],
     comments: [],
     isLoading: false,
-    filter: '',
+    query: '',
   };
 
   dowloadPosts = () => {
@@ -25,22 +25,26 @@ class App extends Component {
         users,
         comments,
         isLoading: false,
-        showedPosts: this.getPostWithData(posts, users, comments, this.state.filter),
+        showedPosts: this.getPostWithData(posts, users, comments, this.state.query),
       });
     });
   };
 
-  applyFilter = debounce(key => {
-    if (key !== this.state.filter) {
+  applyFilter = debounce(query => {
+    if (query !== this.state.query) {
       const { posts, users, comments } = this.state;
 
-      this.setState({ filter: key, showedPosts: this.getPostWithData(posts, users, comments, key) });
+      this.setState({ query, showedPosts: this.getPostWithData(posts, users, comments, query) });
     }
   }, 500);
 
-  getPostWithData(posts, users, comments, filter) {
-    return posts
-      .filter(({ body }) => body.toLowerCase().includes(filter.toLowerCase()))
+  getPostWithData(posts, users, comments, query) {
+    const normalizedQuery = query.toLowerCase();
+    return [...posts]
+      .filter(({ body, title }) => {
+        const searchString = `${title}\n${body}`.toLowerCase();
+        return searchString.includes(normalizedQuery);
+      })
       .map(post => ({
         ...post,
         user: users.find(user => user.id === post.userId),
